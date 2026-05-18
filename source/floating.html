@@ -53,7 +53,7 @@
       height: 208px;
       background-image: url("./assets/spritesheet.webp");
       background-repeat: no-repeat;
-      background-size: 6144px 1872px;
+      background-size: 1536px 1872px;
       transform: translate(-50%, -50%) scale(1.02);
       image-rendering: auto;
       filter: contrast(1.06) saturate(1.04) drop-shadow(0 13px 10px rgba(0, 0, 0, 0.30));
@@ -151,15 +151,15 @@
     const statusEl = document.getElementById("status");
     const spinner = document.getElementById("spinner");
     const states = {
-      idle: { row: 0, frames: 24, fps: 32 },
-      "running-right": { row: 1, frames: 32, fps: 32 },
-      "running-left": { row: 2, frames: 32, fps: 32 },
-      waving: { row: 3, frames: 16, fps: 32 },
-      jumping: { row: 4, frames: 20, fps: 32 },
-      failed: { row: 5, frames: 32, fps: 32 },
-      waiting: { row: 6, frames: 24, fps: 32 },
-      running: { row: 7, frames: 24, fps: 32 },
-      review: { row: 8, frames: 24, fps: 32 },
+      idle: { row: 0, frames: 1, fps: 1 },
+      "running-right": { row: 1, frames: 8, fps: 8 },
+      "running-left": { row: 2, frames: 8, fps: 8 },
+      waving: { row: 3, frames: 4, fps: 8 },
+      jumping: { row: 4, frames: 5, fps: 8 },
+      failed: { row: 5, frames: 8, fps: 8 },
+      waiting: { row: 6, frames: 6, fps: 8 },
+      running: { row: 7, frames: 6, fps: 8 },
+      review: { row: 8, frames: 6, fps: 8 },
     };
 
     let current = "idle";
