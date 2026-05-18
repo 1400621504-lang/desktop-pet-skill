@@ -5,92 +5,92 @@
   "version": "1.0.0",
   "spritesheet": "spritesheet.webp",
   "atlas": {
-    "columns": 16,
+    "columns": 32,
     "rows": 9,
     "cell_width": 192,
     "cell_height": 208,
-    "width": 3072,
+    "width": 6144,
     "height": 1872
   },
   "states": {
     "idle": {
       "row": 0,
-      "frames": 12,
+      "frames": 24,
       "frame_width": 192,
       "frame_height": 208,
-      "fps": 16,
+      "fps": 32,
       "loop": true,
       "purpose": "calm resting, breathing, and blinking loop"
     },
     "running-right": {
       "row": 1,
-      "frames": 16,
+      "frames": 32,
       "frame_width": 192,
       "frame_height": 208,
-      "fps": 16,
+      "fps": 32,
       "loop": true,
       "purpose": "rightward drag movement loop"
     },
     "running-left": {
       "row": 2,
-      "frames": 16,
+      "frames": 32,
       "frame_width": 192,
       "frame_height": 208,
-      "fps": 16,
+      "fps": 32,
       "loop": true,
       "purpose": "leftward drag movement loop"
     },
     "waving": {
       "row": 3,
-      "frames": 8,
+      "frames": 16,
       "frame_width": 192,
       "frame_height": 208,
-      "fps": 16,
+      "fps": 32,
       "loop": true,
       "purpose": "greeting or attention gesture"
     },
     "jumping": {
       "row": 4,
-      "frames": 10,
+      "frames": 20,
       "frame_width": 192,
       "frame_height": 208,
-      "fps": 16,
+      "fps": 32,
       "loop": true,
       "purpose": "hover or playful jump"
     },
     "failed": {
       "row": 5,
-      "frames": 16,
+      "frames": 32,
       "frame_width": 192,
       "frame_height": 208,
-      "fps": 16,
+      "fps": 32,
       "loop": true,
       "purpose": "blocked, failed, or cancelled reaction"
     },
     "waiting": {
       "row": 6,
-      "frames": 12,
+      "frames": 24,
       "frame_width": 192,
       "frame_height": 208,
-      "fps": 16,
+      "fps": 32,
       "loop": true,
       "purpose": "waiting for approval, help, or user input"
     },
     "running": {
       "row": 7,
-      "frames": 12,
+      "frames": 24,
       "frame_width": 192,
       "frame_height": 208,
-      "fps": 16,
+      "fps": 32,
       "loop": true,
       "purpose": "active task work or processing"
     },
     "review": {
       "row": 8,
-      "frames": 12,
+      "frames": 24,
       "frame_width": 192,
       "frame_height": 208,
-      "fps": 16,
+      "fps": 32,
       "loop": true,
       "purpose": "ready or completed output review"
     }
