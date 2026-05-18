@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini Prime Floating</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: transparent;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+    }
+
+    .pet {
+      position: relative;
+      width: 420px;
+      height: 300px;
+      -webkit-app-region: drag;
+      cursor: grab;
+    }
+
+    .pet:active {
+      cursor: grabbing;
+    }
+
+    .shadow {
+      position: absolute;
+      left: 55%;
+      bottom: 86px;
+      width: 112px;
+      height: 14px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(0, 0, 0, 0.28), transparent 72%);
+      filter: blur(5px);
+    }
+
+    .sprite {
+      position: absolute;
+      left: 55%;
+      top: 34%;
+      width: 192px;
+      height: 208px;
+      background-image: url("./assets/spritesheet.webp");
+      background-repeat: no-repeat;
+      background-size: 1536px 1872px;
+      transform: translate(-50%, -50%) scale(1.02);
+      image-rendering: auto;
+      filter: contrast(1.06) saturate(1.04) drop-shadow(0 13px 10px rgba(0, 0, 0, 0.30));
+      transition: transform 220ms ease, filter 220ms ease;
+    }
+
+    .sprite.running {
+      transform: translate(-50%, -49%) scale(1.04);
+      filter: contrast(1.06) saturate(1.04) drop-shadow(0 15px 10px rgba(0, 0, 0, 0.32));
+    }
+
+    .sprite.waiting {
+      transform: translate(-50%, -47%) scale(1.01);
+      filter: contrast(1.06) saturate(1.04) drop-shadow(0 13px 10px rgba(0, 0, 0, 0.30));
+    }
+
+    .sprite.failed {
+      transform: translate(-50%, -47%) scale(1.00) rotate(-1deg);
+      filter: contrast(1.06) saturate(1.04) drop-shadow(0 13px 10px rgba(0, 0, 0, 0.30));
+    }
+
+    .bubble {
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      width: 310px;
+      min-height: 54px;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: 1fr 18px;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 11px 8px 15px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(16, 16, 16, 0.92);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .bubble.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .bubble-text {
+      min-width: 0;
+      color: #fff;
+      font-weight: 760;
+      font-size: 16px;
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+
+    .prompt,
+    .status {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .spinner {
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: rgba(255, 255, 255, 0.95);
+      animation: spin 900ms linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <main class="pet">
+    <div class="shadow"></div>
+    <div id="sprite" class="sprite idle"></div>
+    <div id="bubble" class="bubble">
+      <div class="bubble-text">
+        <div id="prompt" class="prompt">你好</div>
+        <div id="status" class="status">正在思考</div>
+      </div>
+      <div id="spinner" class="spinner"></div>
+    </div>
+  </main>
+
+  <script>
+    const sprite = document.getElementById("sprite");
+    const bubble = document.getElementById("bubble");
+    const promptEl = document.getElementById("prompt");
+    const statusEl = document.getElementById("status");
+    const spinner = document.getElementById("spinner");
+    const states = {
+      idle: { row: 0, frames: 1, fps: 1 },
+      "running-right": { row: 1, frames: 8, fps: 8 },
+      "running-left": { row: 2, frames: 8, fps: 8 },
+      waving: { row: 3, frames: 4, fps: 8 },
+      jumping: { row: 4, frames: 5, fps: 8 },
+      failed: { row: 5, frames: 8, fps: 8 },
+      waiting: { row: 6, frames: 6, fps: 8 },
+      running: { row: 7, frames: 6, fps: 8 },
+      review: { row: 8, frames: 6, fps: 8 },
+    };
+
+    let current = "idle";
+    let frame = 0;
+    let lastFrameAt = 0;
+    let lastUpdate = Date.now();
+    let bubbleUntil = 0;
+
+    const statusText = {
+      idle: "准备好了",
+      running: "正在思考",
+      waiting: "等待确认",
+      failed: "遇到问题",
+      review: "完成检查",
+      waving: "已上线",
+      jumping: "正在响应",
+      "running-left": "正在移动",
+      "running-right": "正在移动",
+    };
+
+    window.setMiniPrimeState = function setMiniPrimeState(payload) {
+      const state = states[payload.state] ? payload.state : "idle";
+      if (state !== current) {
+        current = state;
+        frame = 0;
+        sprite.className = `sprite ${state}`;
+      }
+      const message = payload.message || payload.prompt || payload.userText || payload.label || "";
+      const status = payload.statusText || statusText[state] || payload.label || "";
+      if (message || status) {
+        promptEl.textContent = message || "Mini Prime";
+        statusEl.textContent = status || statusText[state] || "";
+        spinner.style.display = state === "idle" || state === "review" ? "none" : "block";
+        bubble.classList.add("visible");
+        bubbleUntil = Date.now() + (state === "idle" ? 3500 : 45000);
+      }
+      lastUpdate = Date.now();
+    };
+
+    window.addEventListener("mousedown", () => {
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.dragWindow) {
+        window.webkit.messageHandlers.dragWindow.postMessage("drag");
+      }
+    });
+
+    function draw(ts) {
+      const spec = states[current] || states.idle;
+      if (ts - lastFrameAt >= 1000 / spec.fps) {
+        frame = (frame + 1) % spec.frames;
+        lastFrameAt = ts;
+        sprite.style.backgroundPosition = `-${frame * 192}px -${spec.row * 208}px`;
+      }
+
+      if (Date.now() - lastUpdate > 45000 && current !== "idle") {
+        window.setMiniPrimeState({ state: "idle" });
+      }
+      if (bubbleUntil && Date.now() > bubbleUntil) {
+        bubble.classList.remove("visible");
+        bubbleUntil = 0;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+  </script>
+</body>
+</html>

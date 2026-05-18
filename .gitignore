@@ -1,0 +1,5 @@
+.DS_Store
+*.log
+state.json
+sessions/
+node_modules/

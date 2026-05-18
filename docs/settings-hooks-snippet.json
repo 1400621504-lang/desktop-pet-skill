@@ -1,0 +1,115 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/apple/.claude/hooks/mini-prime/dispatch.sh",
+            "args": ["SessionStart"],
+            "async": true
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/apple/.claude/hooks/mini-prime/dispatch.sh",
+            "args": ["UserPromptSubmit"],
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/apple/.claude/hooks/mini-prime/dispatch.sh",
+            "args": ["PreToolUse"],
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/apple/.claude/hooks/mini-prime/dispatch.sh",
+            "args": ["PostToolUse"],
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/apple/.claude/hooks/mini-prime/dispatch.sh",
+            "args": ["PostToolUseFailure"],
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/apple/.claude/hooks/mini-prime/dispatch.sh",
+            "args": ["Notification"],
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/apple/.claude/hooks/mini-prime/dispatch.sh",
+            "args": ["PermissionRequest"],
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/apple/.claude/hooks/mini-prime/dispatch.sh",
+            "args": ["SessionEnd"],
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/apple/.claude/hooks/mini-prime/dispatch.sh",
+            "args": ["Stop"],
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}

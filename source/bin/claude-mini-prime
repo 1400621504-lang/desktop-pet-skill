@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="/Users/apple/Documents/Codex/claude-mini-prime-pet"
+LOG="$ROOT/floating.log"
+
+case "${1:-}" in
+  stop|kill|quit)
+    /usr/bin/pkill -f "/Users/apple/Documents/Codex/claude-mini-prime-pet/MiniPrimeFloating.swift" >/dev/null 2>&1 || true
+    /usr/bin/pkill -f "swift.*claude-mini-prime-pet.*MiniPrimeFloating.swift" >/dev/null 2>&1 || true
+    /usr/bin/pkill -f "/Users/apple/Documents/Codex/claude-mini-prime-pet/bin/MiniPrimeFloating" >/dev/null 2>&1 || true
+    /usr/bin/pkill -f "/Users/apple/Documents/Codex/claude-mini-prime-pet/server.js" >/dev/null 2>&1 || true
+    /bin/rm -rf "$ROOT/sessions"
+    exit 0
+    ;;
+  ensure)
+    MINI_PRIME_STATE="$ROOT/state.json" /usr/bin/env node "$ROOT/hook.js" <<'JSON' >/dev/null 2>&1 || true
+{"hook_event_name":"SessionStart"}
+JSON
+    if ! /usr/bin/pgrep -f "$ROOT/MiniPrimeFloating.swift" >/dev/null 2>&1; then
+      /usr/bin/swift "$ROOT/MiniPrimeFloating.swift" >"$LOG" 2>&1 &
+      sleep 0.8
+    fi
+    exit 0
+    ;;
+esac
+
+/usr/bin/pkill -f "/Users/apple/Documents/Codex/claude-mini-prime-pet/MiniPrimeFloating.swift" >/dev/null 2>&1 || true
+/usr/bin/pkill -f "swift.*claude-mini-prime-pet.*MiniPrimeFloating.swift" >/dev/null 2>&1 || true
+/usr/bin/pkill -f "/Users/apple/Documents/Codex/claude-mini-prime-pet/bin/MiniPrimeFloating" >/dev/null 2>&1 || true
+/usr/bin/pkill -f "/Users/apple/Documents/Codex/claude-mini-prime-pet/server.js" >/dev/null 2>&1 || true
+
+MINI_PRIME_STATE="$ROOT/state.json" /usr/bin/env node "$ROOT/hook.js" <<'JSON' >/dev/null 2>&1 || true
+{"hook_event_name":"SessionStart"}
+JSON
+
+/usr/bin/swift "$ROOT/MiniPrimeFloating.swift" >"$LOG" 2>&1 &
+sleep 0.8
+
+exec claude --settings "$ROOT/claude-settings.json" "$@"
